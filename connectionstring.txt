@@ -1,0 +1,1 @@
+host:perfmon.database.windows.net,user:azureuser@perfmon,password:SwimFast@123,database:Perfmon
