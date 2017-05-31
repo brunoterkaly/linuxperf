@@ -26,4 +26,4 @@ apt-get --assume-yes install freetds-dev
 pip3 install pymssql==2.1.1
 apt-get --assume-yes install ifstat
 apt-get --assume-yes install sysstat
-
+sudo apt-get --assume-yes install iotop

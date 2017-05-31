@@ -1,6 +1,7 @@
 import subprocess
 from shutil import copyfile
 import sys
+import re
 import socket 
 import datetime
 
@@ -34,26 +35,31 @@ def parseHeader(s):
     global rows_count
     # count the first row columns (equals network cards)
     nbr_netcards = count_cols(s)
+    #print(nbr_netcards)
+    #print(s)
     two_d_array = [[0 for j in range(nbr_netcards*2)] for i in range(rows_count)]
-    two_d_array[0][0] = s[11:28].strip() + "|kbps_in"
-    two_d_array[0][1] = s[11:28].strip() + "|kbps_out"
-    two_d_array[0][2] = s[31:48].strip() + "|kbps_in"
-    two_d_array[0][3] = s[31:48].strip() + "|kbps_out"
-    two_d_array[0][4] = s[51:68].strip() + "|kbps_in"
-    two_d_array[0][5] = s[51:68].strip() + "|kbps_out"
-    two_d_array[0][6] = s[71:88].strip() + "|kbps_in"
-    two_d_array[0][7] = s[71:88].strip() + "|kbps_out"
-    two_d_array[0][8] = s[91:108].strip() + "|kbps_in"
-    two_d_array[0][9] = s[91:108].strip() + "|kbps_out"
+    for i in range(nbr_netcards):
+        two_d_array[0][i] = s[11:28].strip() + "|kbps_in"
+        two_d_array[0][i+1] = s[11:28].strip() + "|kbps_out"
+    #print(two_d_array)
+    #exit()
 
 def count_cols(s):
      s2 = s.split()
      return len(s2) - 1
 
+def extract_line(s):
+  s = re.sub('\x1b[^m]*m', '', s)
+  s = re.sub(r'\x1b\[([0-9,A-Z]{1,2}(;[0-9]{1,2})?(;[0-9]{3})?)?[m|K]?', '', s)
+  sep = re.compile('[\s]+')
+  s = sep.split(s)
+  return s
 
 
 def parseLine(s):
      #addToLogFile(s)
+     print(s)
+     exit()
      return (s[0:8].strip() + '|' + \
      s[11:19].strip() + '|' + \
      s[20:28].strip() + '|' + \
@@ -79,7 +85,9 @@ def GetIfStat():
 
     # header 2
     l2 = process.stdout.readline().decode('utf-8')
-    parseLine(l2)
+    #print("l2 = " + l2)
+    #exit()
+    #parseLine(l2)
 
     try:
         while(True):
@@ -87,8 +95,10 @@ def GetIfStat():
            #addToLogFile(s)
            if (s.find("Time") != -1 or  s.find("HH:MM") != -1):
               continue
-           data = parseLine(s)
-           data = data.split("|")
+           #data = parseLine(s)
+           data = extract_line(s)
+           data = data[:-1]
+           #print(data)
            new_row = socket.gethostname() + "|" + (datetime.datetime.now()).strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
            for j in range(0,nbr_netcards*2,2):
               new_row = socket.gethostname() + "|" + (datetime.datetime.now()).strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
@@ -101,6 +111,7 @@ def GetIfStat():
               addToNetworkFile(new_row)
               new_row = socket.gethostname() + "|" + (datetime.datetime.now()).strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
               new_row = new_row + "|" + two_d_array[0][j+1] + "|" + data[j+2]
+              #print(new_row)
               #print(new_row)
               addToNetworkFile(new_row)
     except KeyboardInterrupt:
