@@ -35,13 +35,24 @@ def parseHeader(s):
     global rows_count
     # count the first row columns (equals network cards)
     nbr_netcards = count_cols(s)
-    #print(nbr_netcards)
-    #print(s)
     two_d_array = [[0 for j in range(nbr_netcards*2)] for i in range(rows_count)]
-    for i in range(nbr_netcards):
-        two_d_array[0][i] = s[11:28].strip() + "|kbps_in"
-        two_d_array[0][i+1] = s[11:28].strip() + "|kbps_out"
-    #print(two_d_array)
+    # get column headings
+    col_headings = extract_line(s)
+    # get rid of first 2 and last empty one
+    col_headings.pop(0)
+    col_headings.pop(0)
+    col_headings = col_headings[:-1]
+    # a new array, double the size
+    new_col_headings = [None] * nbr_netcards * 2
+    for i in range(0,nbr_netcards*2, 2):
+       #print(i)
+       #print(int(i/2))
+       new_col_headings[i] = col_headings[int(i/2)] + "|kbps_in"
+       new_col_headings[i+1] = col_headings[int(i/2)] + "|kbps_out"
+       
+    two_d_array[0] = new_col_headings
+
+    print(two_d_array)
     #exit()
 
 def count_cols(s):
@@ -55,22 +66,6 @@ def extract_line(s):
   s = sep.split(s)
   return s
 
-
-def parseLine(s):
-     #addToLogFile(s)
-     print(s)
-     exit()
-     return (s[0:8].strip() + '|' + \
-     s[11:19].strip() + '|' + \
-     s[20:28].strip() + '|' + \
-     s[31:38].strip() + '|' + \
-     s[40:48].strip() + '|' + \
-     s[51:58].strip() + '|' + \
-     s[60:68].strip() + '|' + \
-     s[71:78].strip() + '|' + \
-     s[80:88].strip() + '|' + \
-     s[91:98].strip() + '|' + \
-     s[100:108].strip() + '').replace("\n","")
 
 def GetIfStat():
     global two_d_array
@@ -105,7 +100,9 @@ def GetIfStat():
               val = data[j+1]
               val = data[j+2]
 
-              #print(data[j+1])
+              print(data)
+              #exit()
+              print(data[j+1])
               new_row = new_row + "|" + two_d_array[0][j] + "|" + data[j+1]
               #print(new_row)
               addToNetworkFile(new_row)
