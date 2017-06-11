@@ -22,10 +22,12 @@ if not os.path.exists(fn):
    exit()
 
 try:
-
+   sql = ''
    with open(fn) as f:
       for row in f:
          data = (row.strip().split("|"))
+         if data[-1]== 'n/a':
+            continue
          sql = "insert into network_data(" \
          "hostname,timestamp,network_interface," \
          "in_or_out,kbps_value) values(" \

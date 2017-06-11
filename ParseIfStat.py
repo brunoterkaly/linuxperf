@@ -52,7 +52,7 @@ def parseHeader(s):
        
     two_d_array[0] = new_col_headings
 
-    print(two_d_array)
+    #print(two_d_array)
     #exit()
 
 def count_cols(s):
@@ -100,9 +100,9 @@ def GetIfStat():
               val = data[j+1]
               val = data[j+2]
 
-              print(data)
+              #print(data)
               #exit()
-              print(data[j+1])
+              #print(data[j+1])
               new_row = new_row + "|" + two_d_array[0][j] + "|" + data[j+1]
               #print(new_row)
               addToNetworkFile(new_row)

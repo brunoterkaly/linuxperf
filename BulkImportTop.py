@@ -34,7 +34,7 @@ with open(fn) as f:
        #print(data)
        #exit()
 
-  
+
        status = ''
        if data[9] == 'D':
           status = 'stuck_sleep'

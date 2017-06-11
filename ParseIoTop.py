@@ -69,7 +69,6 @@ def writeLine(s, isLegit):
   cmd = ''
   for item in line[11:]:
      cmd = cmd + " " + item
-  #print("cmd = ",cmd)
   line = line[:11]
   line.append(cmd.strip())
   if isLegit == False:
