@@ -56,6 +56,7 @@ def foundNonZero(s):
   
 def writeLine(s, isLegit):
   line = extract_line(s)
+  #print(line)
   if len(line) == 13:
     if line[0] == '':
       line.pop(0) 
@@ -69,7 +70,9 @@ def writeLine(s, isLegit):
   line = '|'.join(line)
   currtime = (datetime.datetime.now()).strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
   line = socket.gethostname() + '|' + currtime + '|' + line
+
   #print(line)
+  #exit()
   addToTopFile(line +  "\n")
 
 
